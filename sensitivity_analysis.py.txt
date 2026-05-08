@@ -1,0 +1,30 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Physical Constants
+velocity_ms = 27.77  # 100 km/h
+cp = 460             # Gray Cast Iron
+disc_m = 6.8         # kg
+ambient_k = 293
+sim_result_temp = 1118.0
+sim_mass = 1500
+
+# Vehicle Mass Range (1000kg to 3000kg)
+masses = np.linspace(1000, 3000, 20)
+predicted_temps = [((0.5 * m * velocity_ms**2 / 4) / (disc_m * cp)) + ambient_k for m in masses]
+
+# --- PLOTTING ---
+plt.figure(figsize=(10, 6))
+plt.plot(masses, predicted_temps, color='red', marker='o', markersize=4, label='Analytical Prediction')
+plt.axhline(y=sim_result_temp, color='blue', linestyle='--', label=f'SimScale Result ({sim_result_temp}K)')
+plt.axvline(x=sim_mass, color='blue', linestyle='--', alpha=0.5)
+
+plt.title('Sensitivity Analysis: Vehicle Mass vs. Peak Rotor Temp')
+plt.xlabel('Vehicle Mass (kg)')
+plt.ylabel('Peak Temperature (Kelvin)')
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+plt.savefig('Sensitivity Analysis.png')
+print("Sensitivity Analysis.png generated successfully.")
+plt.show()
