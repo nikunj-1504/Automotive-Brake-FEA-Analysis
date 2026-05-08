@@ -1,0 +1,41 @@
+import math
+import matplotlib.pyplot as plt
+
+# --- 1. DATA INPUTS ---
+# Based on the results from your SimScale project
+sim_temp_peak = 1118.0     # Thermal result (K)
+sim_stress_peak = 1.55     # Static result (MPa)
+applied_pressure = 1.0     # The 1 MPa you applied
+
+# Analytical Calculation for Temperature Average
+car_mass = 1500            # kg
+velocity_ms = 100 / 3.6    # 100 km/h to m/s
+disc_mass = 6.8            # kg
+specific_heat = 460        # J/kg*K
+ambient_k = 293
+
+energy_per_disc = (0.5 * car_mass * (velocity_ms**2)) / 4
+analytical_temp = (energy_per_disc / (disc_mass * specific_heat)) + ambient_k
+
+# --- 2. PLOTTING ---
+plt.style.use('ggplot')
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# Thermal Comparison
+ax1.bar(['Analytical (Math)', 'SimScale (FEA)'], [analytical_temp, sim_temp_peak], color=['#3498db', '#e74c3c'])
+ax1.set_title('Thermal: Max Temperature')
+ax1.set_ylabel('Temperature (K)')
+for i, v in enumerate([analytical_temp, sim_temp_peak]):
+    ax1.text(i, v + 20, f"{v:.1f}K", ha='center', fontweight='bold')
+
+# Structural Comparison
+ax2.bar(['Applied Pressure', 'Peak Stress (FEA)'], [applied_pressure, sim_stress_peak], color=['#2ecc71', '#f39c12'])
+ax2.set_title('Structural: Stress Concentration')
+ax2.set_ylabel('Stress (MPa)')
+for i, v in enumerate([applied_pressure, sim_stress_peak]):
+    ax2.text(i, v + 0.05, f"{v:.2f}MPa", ha='center', fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('Comparison_Plot.png')
+print("Comparison_Plot.png generated successfully.")
+plt.show()
